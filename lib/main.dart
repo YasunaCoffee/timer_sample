@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:quiver/async.dart'; // ①quiver.asyncライブラリを利用
-import 'package:async/async.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,6 +31,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _current = 20;
   int _elapsed = 0;
 
+  StreamSubscription sub;
+  bool isPaused = false;
+
   String formatHHMMSS(int seconds) {
     int hours = (seconds / 3600).truncate();
     seconds = (seconds % 3600).truncate();
@@ -48,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // ③ カウントダウン処理を行う関数を定義
-  void startTimer() {
+  void startTimer(_start) {
     CountdownTimer countDownTimer = new CountdownTimer(
       new Duration(seconds: _start), //初期値
       new Duration(seconds: 1), // 減らす幅
@@ -67,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print("Done");
       sub.cancel();
       _current = 0;
+      _elapsed = 0;
     });
   }
 
@@ -92,13 +96,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
             RaisedButton(
               onPressed: () {
-                startTimer();
+                startTimer(_start);
               },
               child: Text("start"),
             ),
             RaisedButton(
-              onPressed: () {},
-              child: Text("reset"),
+              onPressed: () {
+                setState(() {
+                  _start++;
+                  print(_start);
+                });
+              },
+              child: Text("1sec"),
             ),
           ],
         ),
